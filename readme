@@ -1,0 +1,29 @@
+# ---------------------------------------------------------
+# GENERATE OLLAMA MODELFILE
+# ---------------------------------------------------------
+with open(MODELFILE_PATH, "w") as f:
+    f.write(f"""
+FROM ./{GGUF_NAME}
+
+PARAMETER temperature 0.2
+PARAMETER top_p 0.9
+PARAMETER repeat_penalty 1.1
+
+PARAMETER stop "### Question:"
+PARAMETER stop "<|eot_id|>"
+PARAMETER stop "<|end|>"
+
+TEMPLATE \"\"\"### Question:
+{{{{ .Prompt }}}}
+
+### Answer:
+\"\"\"
+""".strip())
+
+print("✅ EXPORT COMPLETE")
+print(f"📦 GGUF FILE : {os.path.join(GGUF_DIR, GGUF_NAME)}")
+print(f"📄 Modelfile : {MODELFILE_PATH}")
+
+cd Llama3_Ollama
+ollama create llama3-baseer -f Modelfile
+ollama run llama3-baseer
